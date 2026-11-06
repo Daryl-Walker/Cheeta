@@ -1,0 +1,13 @@
+{
+  "name": "cheeta",
+  "private": true,
+  "workspaces": [
+    "packages/contracts",
+    "services/api",
+    "apps/mobile"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @cheeta/contracts && npm run build --workspace @cheeta/api",
+    "test": "npm test --workspace @cheeta/api"
+  }
+}
