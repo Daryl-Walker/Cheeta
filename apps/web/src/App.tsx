@@ -10,7 +10,6 @@ import { DEMO_SNAPSHOT } from "./lib/demo";
 import DashboardPage from "./pages/Dashboard";
 import MarketsPage from "./pages/Markets";
 import PositionsPage from "./pages/Positions";
-import AnalyticsPage from "./pages/Analytics";
 import BetDetailPage from "./pages/BetDetail";
 
 function SignIn({ onDemo, onToken }: { onDemo: () => void; onToken: (token: string) => void }) {
@@ -186,7 +185,6 @@ export default function App() {
                 <Route path="/" element={<DashboardPage {...props} />} />
                 <Route path="/positions" element={<PositionsPage {...props} />} />
                 <Route path="/markets" element={<MarketsPage {...props} />} />
-                <Route path="/analytics" element={<AnalyticsPage {...props} />} />
                 <Route path="/bet/:ticker" element={<BetDetailPage {...props} />} />
                 <Route path="*" element={<DashboardPage {...props} />} />
               </Routes>

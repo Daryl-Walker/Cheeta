@@ -17,11 +17,8 @@ Express API — no new backend, no order placement.
 - **Centre feed:** the main interaction area — bet cards (Yes/No prices,
   volume, stake input, place-bet button labeled *coming soon in Milestone 2*)
   and open-position cards with P&L. Clicking a bet card opens its detail
-  view (`/bet/:ticker`) with **Analytics** and **Info** tabs.
-- **Analytics tab** (`/analytics`): odds, compare-bets table, what's
-  trending, and a price-history chart. Price history is an illustrative
-  sample shape — the API does not return historical prices yet, and the UI
-  says so.
+  view (`/bet/:ticker`) with **Analytics** and **Info** tabs — Analytics and
+  Info live only inside that bet detail view, not in the top nav.
 - **Left sidebar:** nav, Kalshi link status, watchlists.
 - **Right panel:** account summary, P&L, top movers, provider health, social notes.
 

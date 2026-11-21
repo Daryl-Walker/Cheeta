@@ -7,7 +7,6 @@ const TABS = [
   { to: "/", label: "Dashboard" },
   { to: "/positions", label: "Positions" },
   { to: "/markets", label: "Markets" },
-  { to: "/analytics", label: "Analytics" },
 ];
 
 export default function TopBar({

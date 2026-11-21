@@ -40,8 +40,9 @@ bet cards and open positions, a left sidebar, and a right account panel.
 Bet cards show prices and a stake input, but the place-bet action is
 disabled and labeled "coming soon (Milestone 2)" — there is no order API
 yet. Clicking a bet opens a detail view with Analytics (odds, trending,
-price history) and Info (contract details, rules, expiry, volume) tabs,
-and there is an Analytics tab for odds, bet comparison, and trending.
+price history) and Info (contract details, rules, expiry, volume) tabs —
+those two tabs live only inside the bet detail view, not in the top nav,
+which stays Dashboard / Positions / Markets.
 If the API is unreachable it shows clearly-labeled demo data.
 
 Social (first pass): feed cards have an opt-in Share action (Facebook / X /

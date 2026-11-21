@@ -14,7 +14,6 @@ export default function Sidebar({
           { to: "/", label: "Dashboard", end: true },
           { to: "/positions", label: "Positions", end: false },
           { to: "/markets", label: "Markets", end: false },
-          { to: "/analytics", label: "Analytics", end: false },
         ].map((item) => (
           <NavLink
             key={item.to}
