@@ -73,3 +73,48 @@ export function isHttpUrl(value: string): boolean {
     return false;
   }
 }
+
+/**
+ * Following inside Cheeta — UI only in Milestone 1.
+ *
+ * There is NO friends/follow backend yet: the traders below are sample
+ * data, follower counts are sample numbers, and a Follow tap is stored
+ * only in this browser's localStorage. A real follow graph (who follows
+ * whom, persisted per account, activity feeds) is a Milestone 2 backend
+ * item. The UI labels all of this as sample.
+ */
+export interface DemoTrader {
+  handle: string;
+  name: string;
+  bio: string;
+  followers: number;
+  following: number;
+}
+
+export const DEMO_TRADERS: DemoTrader[] = [
+  { handle: "@maya-markets", name: "Maya", bio: "Fed + inflation watcher", followers: 1240, following: 86 },
+  { handle: "@odds-watcher", name: "Sam", bio: "Odds moves, all day", followers: 863, following: 142 },
+  { handle: "@contrarian-cal", name: "Cal", bio: "Takes the other side", followers: 412, following: 97 },
+];
+
+/** Deterministically assign a sample author to a market, by ticker. */
+export function authorForTicker(ticker: string): DemoTrader {
+  let hash = 0;
+  for (const ch of ticker) hash = (hash * 31 + ch.charCodeAt(0)) % 100000;
+  return DEMO_TRADERS[hash % DEMO_TRADERS.length];
+}
+
+const FOLLOWS_KEY = "cheeta-follows";
+
+export function loadFollowed(): string[] {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(FOLLOWS_KEY) ?? "[]") as unknown;
+    return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveFollowed(handles: string[]): void {
+  localStorage.setItem(FOLLOWS_KEY, JSON.stringify(handles));
+}

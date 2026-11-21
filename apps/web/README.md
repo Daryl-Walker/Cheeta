@@ -22,7 +22,7 @@ Express API — no new backend, no order placement.
 - **Left sidebar:** nav, Kalshi link status, watchlists.
 - **Right panel:** account summary, P&L, top movers, provider health, social notes.
 
-## Social — first pass
+## Social — first pass (Daryl said yes to all three: share, social sign-in, follow)
 
 - Each bet/position card has a **Share** action. Sharing is opt-in, per
   card, and never automatic: it shows exactly what will be shared (the
@@ -30,8 +30,21 @@ Express API — no new backend, no order placement.
   the network's standard share page in a new tab (Facebook / X). TikTok has
   no web share-intent URL, so its action copies the text and opens
   tiktok.com for the user to post themselves.
-- No social login, no Facebook/TikTok/X SDKs, no social credentials stored.
-  Follow / friends / activity feeds are a later milestone, not this one.
+- **Share a parlay:** the Share menu also copies a parlay link to that exact
+  bet (`/bet/:ticker?side=…&stake=…`). A friend who opens it sees the same
+  bet pre-filled in the detail view and can place it once live betting
+  lands in Milestone 2. The link carries no balance or position.
+- **Follow inside Cheeta:** bet cards show the (sample) trader who shared
+  the market with a Follow button, and the right panel lists Traders to
+  follow. This is UI only in Milestone 1 — traders and follower counts are
+  sample data, follows are kept in this browser only. A real follow graph
+  and activity feed are Milestone 2 backend work.
+- **Social sign-in:** the sign-in screen shows Continue with Facebook / X /
+  TikTok buttons, but they are disabled and labeled "Coming soon". Social
+  sign-in is NOT wired up in Milestone 1 — Entra External ID is still the
+  real auth, and adding Facebook / X / TikTok as identity providers is a
+  separate Milestone 2 decision. No social login, no social SDKs, no social
+  credentials stored.
 
 ## Run it
 

@@ -96,6 +96,11 @@ export default function TopBar({
             {menuOpen && (
               <div className="absolute right-0 z-20 mt-2 w-80 rounded-xl border border-slate-200 bg-white p-4 shadow-lg">
                 <p className="text-sm font-bold text-slate-900">Your profile</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  <span className="font-bold text-slate-900">128 followers</span> ·{" "}
+                  <span className="font-bold text-slate-900">86 following</span>{" "}
+                  <span className="text-slate-400">(sample — no follow backend yet)</span>
+                </p>
                 <p className="mt-1 text-xs leading-5 text-slate-500">
                   Link your social profiles so people can find you from Cheeta.
                   Links are stored only in this browser — no social login, and

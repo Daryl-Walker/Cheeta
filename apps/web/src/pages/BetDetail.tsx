@@ -2,6 +2,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import { cents, money } from "../lib/api";
 import type { DashboardProps } from "../lib/app-state";
 import { OddsTable, priceHistory, Sparkline } from "../components/AnalyticsCharts";
+import { BetCard } from "../components/BetCard";
 
 /**
  * Bet detail view. Clicking a bet in the feed opens this page.
@@ -29,6 +30,10 @@ export default function BetDetailPage({ snapshot, isDemo }: DashboardProps) {
   const history = priceHistory(market);
   const trending = [...snapshot.markets].sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0)).slice(0, 5);
   const others = snapshot.markets.filter((m) => m.ticker !== market.ticker);
+  // Shared-parlay links (?side=yes&stake=10) pre-fill the bet card below.
+  const sharedSide = searchParams.get("side") === "no" ? "no" : "yes";
+  const sharedStake = searchParams.get("stake") ?? "10";
+  const sharedParlay = searchParams.has("side") || searchParams.has("stake");
 
   return (
     <div className="space-y-4">
@@ -40,7 +45,16 @@ export default function BetDetailPage({ snapshot, isDemo }: DashboardProps) {
         <h1 className="mt-1 text-2xl font-extrabold text-slate-900">{market.title}</h1>
         {market.subtitle && <p className="mt-1 text-sm text-slate-500">{market.subtitle}</p>}
         {isDemo && <span className="mt-2 inline-block rounded-full bg-amber-100 px-2 py-1 text-[11px] font-bold text-amber-800">Demo data</span>}
+        {sharedParlay && (
+          <p className="mt-2 rounded-xl bg-blue-50 p-3 text-xs leading-5 text-blue-900">
+            Shared parlay: this bet was pre-filled from a link a friend sent you
+            ({sharedSide} · ${sharedStake} stake). Placing it is Milestone 2 —
+            Milestone 1 is read-only.
+          </p>
+        )}
       </div>
+
+      <BetCard market={market} initialSide={sharedSide} initialStake={sharedStake} />
 
       <div className="flex gap-2" role="tablist" aria-label="Bet detail tabs">
         {(["analytics", "info"] as const).map((t) => (
@@ -49,7 +63,11 @@ export default function BetDetailPage({ snapshot, isDemo }: DashboardProps) {
             type="button"
             role="tab"
             aria-selected={tab === t}
-            onClick={() => setSearchParams({ tab: t })}
+            onClick={() => {
+              const next = new URLSearchParams(searchParams);
+              next.set("tab", t);
+              setSearchParams(next);
+            }}
             className={`rounded-full px-4 py-2 text-sm font-bold capitalize ${tab === t ? "bg-[#2563eb] text-white" : "bg-white text-slate-700 border border-slate-200"}`}
           >
             {t}

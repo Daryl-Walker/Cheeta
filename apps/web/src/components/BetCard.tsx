@@ -2,16 +2,39 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { MarketSummary, PositionSummary } from "@cheeta/contracts";
 import { cents, money } from "../lib/api";
+import { authorForTicker } from "../lib/social";
+import FollowButton from "./FollowButton";
 import ShareMenu from "./ShareMenu";
 
-export function BetCard({ market }: { market: MarketSummary }) {
-  const [side, setSide] = useState<"yes" | "no">("yes");
-  const [stake, setStake] = useState("10");
+export function BetCard({
+  market,
+  initialSide = "yes",
+  initialStake = "10",
+}: {
+  market: MarketSummary;
+  initialSide?: "yes" | "no";
+  initialStake?: string;
+}) {
+  const [side, setSide] = useState<"yes" | "no">(initialSide);
+  const [stake, setStake] = useState(initialStake);
   const price = side === "yes" ? market.yesBid : market.yesAsk !== null && market.yesBid !== null ? 1 - market.yesBid : null;
+  const author = authorForTicker(market.ticker);
 
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#14b8a6] text-sm font-bold text-white">
+          {author.name[0]}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-bold text-slate-900">
+            {author.name} <span className="font-medium text-slate-500">{author.handle}</span>
+          </p>
+          <p className="truncate text-xs text-slate-500">{author.bio} · sample trader</p>
+        </div>
+        <FollowButton trader={author} compact />
+      </div>
+      <div className="mt-3 flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             {market.ticker} · {market.status}
@@ -26,7 +49,7 @@ export function BetCard({ market }: { market: MarketSummary }) {
             View details — Analytics &amp; Info →
           </Link>
         </div>
-        <ShareMenu marketTitle={market.title} />
+        <ShareMenu marketTitle={market.title} ticker={market.ticker} side={side} stake={stake} />
       </div>
 
       <div className="mt-3 flex gap-2">

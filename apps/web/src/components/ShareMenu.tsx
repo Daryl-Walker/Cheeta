@@ -6,11 +6,31 @@ import { SOCIAL_LABELS, shareTextForMarket, shareUrl, type SocialNetwork } from 
  * (market title only — never balances, positions, or P&L) and only opens
  * the network's share page when they click a network. Nothing auto-posts.
  */
-export default function ShareMenu({ marketTitle }: { marketTitle: string }) {
+export default function ShareMenu({
+  marketTitle,
+  ticker,
+  side,
+  stake,
+}: {
+  marketTitle: string;
+  ticker?: string;
+  side?: "yes" | "no";
+  stake?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [parlayCopied, setParlayCopied] = useState(false);
   const text = shareTextForMarket(marketTitle);
   const pageUrl = "https://github.com/Daryl-Walker/Cheeta";
+  const parlayUrl =
+    ticker && side
+      ? `${window.location.origin}/bet/${encodeURIComponent(ticker)}?side=${side}&stake=${encodeURIComponent(stake ?? "10")}`
+      : null;
+
+  function copyParlay() {
+    if (!parlayUrl) return;
+    navigator.clipboard?.writeText(parlayUrl).then(() => setParlayCopied(true)).catch(() => setParlayCopied(false));
+  }
 
   function share(network: SocialNetwork) {
     if (network === "tiktok") {
@@ -54,6 +74,25 @@ export default function ShareMenu({ marketTitle }: { marketTitle: string }) {
             ))}
           </div>
           {copied && <p className="mt-2 text-xs text-teal-700">Copied for TikTok — paste it in TikTok if you want to post it.</p>}
+          {parlayUrl && (
+            <div className="mt-3 border-t border-slate-100 pt-3">
+              <p className="text-xs font-semibold text-slate-900">Share this parlay</p>
+              <p className="mt-1 text-[11px] leading-4 text-slate-500">
+                Copy a link to this exact bet ({side} · ${stake ?? "10"} stake). A friend
+                who opens it sees the same bet pre-filled and can place it —
+                once live betting lands in Milestone 2. No balance or position
+                is included in the link.
+              </p>
+              <button
+                type="button"
+                onClick={copyParlay}
+                className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"
+              >
+                Copy parlay link
+              </button>
+              {parlayCopied && <p className="mt-2 text-xs text-teal-700">Parlay link copied.</p>}
+            </div>
+          )}
           <button type="button" onClick={() => setOpen(false)} className="mt-2 text-xs font-semibold text-slate-500">
             Cancel
           </button>

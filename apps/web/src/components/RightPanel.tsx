@@ -1,5 +1,7 @@
 import type { DashboardSnapshot } from "@cheeta/contracts";
 import { cents, money } from "../lib/api";
+import { DEMO_TRADERS } from "../lib/social";
+import FollowButton from "./FollowButton";
 
 export default function RightPanel({
   snapshot,
@@ -47,6 +49,31 @@ export default function RightPanel({
         <p className="mt-1 text-xs leading-5 text-slate-500">
           Last sync {new Date(account.syncedAt).toLocaleString()}.
           {isDemo ? " Demo data — connect the real API to see live syncs." : " Live data from the Cheeta API."}
+        </p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-4">
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Traders to follow</p>
+        <ul className="mt-3 space-y-3">
+          {DEMO_TRADERS.map((trader) => (
+            <li key={trader.handle} className="flex items-center gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#14b8a6] text-sm font-bold text-white">
+                {trader.name[0]}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold text-slate-900">
+                  {trader.name} <span className="font-medium text-slate-500">{trader.handle}</span>
+                </p>
+                <p className="truncate text-xs text-slate-500">{trader.bio}</p>
+              </div>
+              <FollowButton trader={trader} compact />
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-[11px] leading-4 text-slate-400">
+          Sample traders and follower counts — following inside Cheeta is UI
+          only in Milestone 1. Follows are kept in this browser; a real
+          follow backend and activity feed are Milestone 2.
         </p>
       </section>
 

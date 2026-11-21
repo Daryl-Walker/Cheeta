@@ -47,8 +47,11 @@ If the API is unreachable it shows clearly-labeled demo data.
 
 Social (first pass): feed cards have an opt-in Share action (Facebook / X /
 TikTok, market title only, never a balance or position, never automatic)
-and the user menu holds social profile links. No social login, no social
-SDKs, no social credentials. See `apps/web/README.md`.
+plus a shareable parlay link that opens the same bet pre-filled for a
+friend; bet cards and the right panel have Follow buttons with
+clearly-labeled sample traders/counts (no follow backend yet); the sign-in
+screen shows Continue with Facebook / X / TikTok buttons labeled coming
+soon (not wired — Entra is still the real auth). See `apps/web/README.md`.
 
 **CORS note:** `services/api` has no CORS middleware yet. The Vite dev
 server proxies `/api` to `http://localhost:4000`, so local development

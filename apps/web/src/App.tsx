@@ -39,6 +39,31 @@ function SignIn({ onDemo, onToken }: { onDemo: () => void; onToken: (token: stri
         >
           Continue with demo data
         </button>
+
+        <div className="mt-5">
+          <p className="text-center text-xs font-semibold uppercase tracking-wider text-slate-400">
+            Or continue with
+          </p>
+          <div className="mt-2 space-y-2">
+            {(["Facebook", "X", "TikTok"] as const).map((network) => (
+              <button
+                key={network}
+                type="button"
+                disabled
+                title={`Continue with ${network} is coming soon — social sign-in is not wired up yet.`}
+                className="flex w-full cursor-not-allowed items-center justify-between rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-400"
+              >
+                <span>Continue with {network}</span>
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold">Coming soon</span>
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-center text-[11px] leading-4 text-slate-400">
+            Social sign-in is not wired up yet — Entra External ID is still
+            the real sign-in for Cheeta. Adding Facebook / X / TikTok as
+            identity providers is a separate Milestone 2 decision.
+          </p>
+        </div>
         <label className="mt-5 block">
           <span className="text-xs font-semibold text-slate-700">Or paste an API bearer token (kept only in this tab)</span>
           <input
