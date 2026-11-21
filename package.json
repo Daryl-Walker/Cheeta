@@ -4,10 +4,11 @@
   "workspaces": [
     "packages/contracts",
     "services/api",
-    "apps/mobile"
+    "apps/mobile",
+    "apps/web"
   ],
   "scripts": {
-    "build": "npm run build --workspace @cheeta/contracts && npm run build --workspace @cheeta/api",
+    "build": "npm run build --workspace @cheeta/contracts && npm run build --workspace @cheeta/api && npm run build --workspace @cheeta/web",
     "test": "npm test --workspace @cheeta/api"
   }
 }

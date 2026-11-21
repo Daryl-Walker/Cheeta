@@ -21,6 +21,24 @@ Start the API with `npm run dev --workspace @cheeta/api`. For local-only develop
 
 Start the mobile client with `npm start --workspace @cheeta/mobile`. Set `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_ENTRA_AUTHORITY`, `EXPO_PUBLIC_ENTRA_CLIENT_ID`, `EXPO_PUBLIC_ENTRA_ISSUER`, and `EXPO_PUBLIC_ENTRA_API_SCOPE` from `apps/mobile/.env.example` (Expo public variables are configuration, never secrets). `entraAuthority` is the External ID authority/base URL used for discovery; the redirect URI scheme is `cheeta`. Configure the app registration for authorization-code flow with PKCE, the API scope, and the generated native redirect URI. The API validates access tokens using the configured issuer, audience, and JWKS URL.
 
+## Web client (Milestone 1, read-only)
+
+Start the web app with `npm run dev --workspace @cheeta/web` — it runs at
+http://localhost:5173. It is a Vite + React + TypeScript + Tailwind CSS app
+in `apps/web/` (see its README). The Vite dev server proxies `/api` and
+`/health` to `http://localhost:4000`, so local development works even
+though the API has no CORS middleware yet. Set `VITE_API_URL` from
+`apps/web/.env.example` to point at another API.
+
+If the API is unreachable, the web app shows clearly-labeled demo data.
+Entra sign-in for the web is not wired up yet: sign in with demo mode, or
+paste a bearer token (kept only in the tab's session storage). A web/SPA
+redirect URI must be registered in Entra before MSAL sign-in is added.
+
+For a deployed web app, the API must allow the web origin via CORS (with
+the `Authorization` header) — that is still to do; the dev proxy is not a
+substitute in production.
+
 ## Azure SQL
 
 Set `AZURE_SQL_CONNECTION_STRING` for the API and run `npm run migrate --workspace @cheeta/api` from the repository root. Migration SQL is in `services/api/db/migrations`. No seed data is created. Production uses Azure SQL plus Key Vault; configure `AZURE_KEY_VAULT_URL` and grant the API's managed identity Key Vault secret read/write/delete permissions. `DefaultAzureCredential` is used by the Key Vault adapter.
