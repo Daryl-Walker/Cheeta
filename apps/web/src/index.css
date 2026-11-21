@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2563eb;
+  --color-accent: #14b8a6;
+  --color-surface: #f8fafc;
+  --color-ink: #0f172a;
+  --color-muted: #64748b;
+  --color-border: #e2e8f0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Horizontal "Stories-style" strip: hide the scrollbar, keep the scroll. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
