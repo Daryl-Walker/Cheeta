@@ -7,6 +7,8 @@ import StatusStrip from "./components/StatusStrip";
 import TopBar from "./components/TopBar";
 import { API_URL, fetchDashboard, getToken, linkKalshi, setToken, unlinkKalshi } from "./lib/api";
 import { DEMO_SNAPSHOT } from "./lib/demo";
+import { fetchExternalMarkets, type ExternalFeedStatus, type ExternalSource } from "./lib/external-markets";
+import type { SourceFilter } from "./lib/app-state";
 import DashboardPage from "./pages/Dashboard";
 import MarketsPage from "./pages/Markets";
 import PositionsPage from "./pages/Positions";
@@ -99,6 +101,22 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [watchlist] = useState(["Fed decisions", "Inflation", "S&P 500", "Bitcoin"]);
+  // Extra read-only feeds (Polymarket + SX Bet, public APIs, no keys).
+  // Kept separate from the Kalshi snapshot so a failed extra feed never
+  // wipes the account feed, and so the demo fallback stays clearly labeled.
+  const [externalMarkets, setExternalMarkets] = useState<DashboardSnapshot["markets"]>([]);
+  const [externalStatus, setExternalStatus] = useState<Record<ExternalSource, ExternalFeedStatus>>({
+    polymarket: "loading",
+    sxbet: "loading",
+  });
+  const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
+
+  // Merge the extra feeds into the snapshot the pages render. Kalshi/demo
+  // markets keep their order first; Polymarket/SX Bet follow.
+  const mergedSnapshot: DashboardSnapshot = {
+    ...snapshot,
+    markets: [...snapshot.markets, ...externalMarkets],
+  };
 
   const refresh = useCallback(async () => {
     setBusy(true);
@@ -122,6 +140,22 @@ export default function App() {
   useEffect(() => {
     if (signedIn) void refresh();
   }, [signedIn, refresh]);
+
+  // Load the extra read-only feeds once per sign-in. Each source fails
+  // independently: a dead source just flips to "unavailable" and the rest
+  // of the feed keeps working.
+  useEffect(() => {
+    if (!signedIn) return;
+    let cancelled = false;
+    void fetchExternalMarkets().then(({ markets, status }) => {
+      if (cancelled) return;
+      setExternalMarkets(markets);
+      setExternalStatus(status);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [signedIn]);
 
   async function handleLink(apiKeyId: string, privateKeyPem: string) {
     setBusy(true);
@@ -174,7 +208,7 @@ export default function App() {
   }
 
   const props = {
-    snapshot,
+    snapshot: mergedSnapshot,
     isDemo,
     query,
     linked,
@@ -182,6 +216,9 @@ export default function App() {
     error,
     onLink: handleLink,
     onUnlink: handleUnlink,
+    sourceFilter,
+    onSourceFilter: setSourceFilter,
+    externalStatus,
   };
 
   return (

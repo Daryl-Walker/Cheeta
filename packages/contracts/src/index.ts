@@ -1,5 +1,16 @@
 export type ProviderId = "kalshi";
 
+/** Where a market came from. Kalshi is the linked account provider;
+ * Polymarket and SX Bet are extra read-only public feeds (Milestone 1).
+ * Absent means Kalshi (older snapshots / demo data predate the field). */
+export type MarketSource = "kalshi" | "polymarket" | "sxbet";
+
+export const MARKET_SOURCE_LABELS: Record<MarketSource, string> = {
+  kalshi: "Kalshi",
+  polymarket: "Polymarket",
+  sxbet: "SX Bet",
+};
+
 export interface AccountSummary {
   provider: ProviderId;
   currency: string;
@@ -27,6 +38,8 @@ export interface MarketSummary {
   volume: number | null;
   openInterest: number | null;
   closeTime: string | null;
+  /** Data source. Defaults to "kalshi" when absent. */
+  source?: MarketSource;
 }
 
 export interface DashboardSnapshot {

@@ -71,6 +71,46 @@ session storage). Register a web/SPA redirect URI in Entra and add MSAL
 tokens server-side, and Kalshi credentials are only ever sent to the API
 over HTTPS, never stored in the browser.
 
+## Extra read-only sources: Polymarket + SX Bet
+
+The feed also pulls two extra public feeds, read-only, alongside Kalshi
+(`apps/web/src/lib/external-markets.ts`). No keys, no wallet, no trading.
+
+- **Polymarket** — public Gamma API, no key. Direct browser fetch works
+  (it sends `Access-Control-Allow-Origin: *`, verified 2026-11-23).
+  Question, Yes price, 24h volume, end date. Note: its `/markets`
+  endpoint is deprecated in favour of `/markets/keyset` but still answers.
+- **SX Bet** — public listing, no key, sports only. Its listing carries
+  **no prices** (order-book / best-odds endpoints need a free API key,
+  which Milestone 1 deliberately does not use), so SX Bet markets are
+  shown with "price unavailable" — never invented. SX Bet sends no CORS
+  headers, so the app tries the direct URL first and falls back to the
+  Vite dev proxy (`/sx`, a dev-server middleware in `vite.config.ts`); in a production build the
+  proxy does not exist, so SX Bet shows as unavailable and the rest of
+  the feed keeps working. A same-origin proxy or server-side fetch is the
+  follow-up for production.
+
+Feed tabs filter by source (All / Kalshi / Polymarket / SX Bet), every card
+is badged with its source, and a failed feed shows a clear "live data
+unavailable" notice instead of crashing — the Kalshi/demo feed stays up.
+
+## Best odds — cross-source comparison
+
+Each bet detail view (Analytics tab) has a **Best odds** section
+(`apps/web/src/lib/compare.ts`). Prices are normalised to cents (0–100);
+best Yes is the cheapest Yes price, best No the cheapest No price, with
+the Yes spread shown (e.g. Kalshi 62¢ vs Polymarket 58¢).
+
+Matching is deliberately strict and text-based: sports need both team
+names plus dates within 3 days; other markets need at least 2 shared
+content words, token overlap ≥ 0.4, and close dates within 14 days — and
+only across different sources. Below that bar the market is shown singly,
+never force-matched. Limits are stated in the UI: differently-worded
+markets about the same event can be missed, similar markets can still
+slip through, prices are a snapshot not a live tick, and best price is
+not best value — fees, liquidity, expiry and rules differ, and nothing
+here promises a profit or arbitrage.
+
 ## What is NOT in Milestone 1
 
 - Live bet placement — there is no order API yet. Bet cards show prices and

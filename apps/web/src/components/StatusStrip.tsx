@@ -1,4 +1,5 @@
 import type { DashboardSnapshot, MarketSummary } from "@cheeta/contracts";
+import { MARKET_SOURCE_LABELS } from "@cheeta/contracts";
 import { cents, money, timeAgo } from "../lib/api";
 import { DEMO_ACCOUNTS } from "../lib/demo";
 
@@ -38,7 +39,7 @@ export default function StatusStrip({
             key={market.ticker}
             className="w-60 shrink-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
           >
-            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{market.ticker}</p>
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{market.ticker} · {MARKET_SOURCE_LABELS[market.source ?? "kalshi"]}</p>
             <p className="mt-1 line-clamp-2 min-h-10 text-sm font-semibold text-slate-900">{market.title}</p>
             <p className="mt-2 text-xl font-extrabold text-[#2563eb]">Yes {cents(market.yesBid)}</p>
             <p className="mt-1 text-xs text-slate-500">

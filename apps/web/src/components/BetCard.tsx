@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { MarketSummary, PositionSummary } from "@cheeta/contracts";
 import { cents, money } from "../lib/api";
+import { sourceLabel, sourceOf } from "../lib/compare";
 import { authorForTicker } from "../lib/social";
 import FollowButton from "./FollowButton";
 import ShareMenu from "./ShareMenu";
@@ -39,6 +40,9 @@ export function BetCard({
           <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             {market.ticker} · {market.status}
           </p>
+          <span className="mt-1 inline-block rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-bold text-[#2563eb]">
+            {sourceLabel(market)}
+          </span>
           <h3 className="mt-1 text-base font-bold text-slate-900">
             <Link to={`/bet/${encodeURIComponent(market.ticker)}`} className="hover:text-[#2563eb] hover:underline">
               {market.title}
@@ -73,6 +77,13 @@ export function BetCard({
         Volume {market.volume?.toLocaleString() ?? "—"} · Open interest {market.openInterest?.toLocaleString() ?? "—"}
         {market.closeTime ? ` · Closes ${new Date(market.closeTime).toLocaleDateString()}` : ""}
       </p>
+      {sourceOf(market) === "sxbet" && market.yesBid === null && (
+        <p className="mt-2 rounded-lg bg-slate-50 p-2 text-[11px] leading-4 text-slate-500">
+          No live price: SX Bet&apos;s public listing carries no prices, and its
+          priced feed needs a free API key that Milestone 1 does not use. This
+          market is shown for the event only — no price is guessed.
+        </p>
+      )}
 
       <div className="mt-3 flex items-center gap-2">
         <label className="flex flex-1 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2">

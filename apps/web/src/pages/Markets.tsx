@@ -3,8 +3,8 @@ import KalshiLinkForm from "../components/KalshiLinkForm";
 import { filterMarkets, type DashboardProps } from "../lib/app-state";
 
 export default function MarketsPage(props: DashboardProps) {
-  const { snapshot, query, linked, busy, error, onLink, onUnlink } = props;
-  const markets = filterMarkets(snapshot, query);
+  const { snapshot, query, linked, busy, error, onLink, onUnlink, sourceFilter } = props;
+  const markets = filterMarkets(snapshot, query, sourceFilter);
   return (
     <div className="space-y-4">
       <div className="flex items-start justify-between gap-3">
