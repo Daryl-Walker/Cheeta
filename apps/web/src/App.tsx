@@ -259,7 +259,10 @@ export default function App() {
                 API: {API_URL} {getToken() ? "· signed in with a bearer token" : "· demo mode"}
               </p>
             </main>
-            <RightPanel snapshot={snapshot} isDemo={isDemo} />
+            {/* Right panel gets the merged snapshot (Kalshi + Polymarket +
+                SX Bet) so the risky-bets sidebar can show underdogs from
+                all three sources, not just Kalshi. */}
+            <RightPanel snapshot={mergedSnapshot} isDemo={isDemo} />
           </div>
         </div>
       </div>

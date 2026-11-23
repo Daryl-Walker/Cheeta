@@ -1,5 +1,8 @@
+import { Link } from "react-router-dom";
 import type { DashboardSnapshot } from "@cheeta/contracts";
 import { cents, money } from "../lib/api";
+import { sourceLabel } from "../lib/compare";
+import { compareHighestPayout, formatPayout, riskBand } from "../lib/risk";
 import { DEMO_TRADERS } from "../lib/social";
 import FollowButton from "./FollowButton";
 
@@ -12,13 +15,57 @@ export default function RightPanel({
 }) {
   const { account, markets } = snapshot;
   const totalPnl = account.positions.reduce((sum, p) => sum + (p.realizedPnl ?? 0), 0);
+  // Risky bets sidebar: underdog Yes <= 30¢ (riskBand "high"), biggest
+  // payout first. SX Bet markets have no price, so riskBand is "noprice"
+  // for them and they never appear here — no price is ever guessed.
+  const riskyBets = [...markets]
+    .filter((m) => riskBand(m) === "high")
+    .sort(compareHighestPayout)
+    .slice(0, 6);
   const topMovers = [...markets]
     .filter((m) => m.yesBid !== null && m.yesAsk !== null)
     .sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0))
     .slice(0, 4);
 
   return (
-    <aside className="hidden w-72 shrink-0 space-y-4 xl:block" aria-label="Account summary">
+    <aside className="hidden w-64 shrink-0 space-y-4 lg:block xl:w-72" aria-label="Risky bets sidebar">
+      {/* Risky bets — high payout: FIRST in the right sidebar, odds first
+          on every card. Clicking a card opens that bet's detail page. */}
+      <section className="rounded-2xl border border-violet-200 bg-white p-4">
+        <p className="text-xs font-bold uppercase tracking-wider text-violet-700">Risky bets — high payout</p>
+        <p className="mt-1 text-[11px] leading-4 text-slate-500">
+          Underdogs that could pay out big. High payout means high risk —
+          these are long shots, not safe bets.
+        </p>
+        <ul className="mt-3 space-y-2">
+          {riskyBets.map((m) => (
+            <li key={m.ticker}>
+              <Link
+                to={`/bet/${encodeURIComponent(m.ticker)}`}
+                className="block rounded-xl border border-violet-100 bg-violet-50/60 p-3 hover:border-violet-300 hover:bg-violet-50"
+              >
+                {/* Odds FIRST, big: price, then payout per $1. */}
+                <p className="text-xl font-extrabold leading-6 text-violet-800">
+                  Yes {cents(m.yesBid)} · pays {formatPayout(m.yesBid)} per $1
+                </p>
+                <p className="mt-1 text-sm font-bold leading-5 text-slate-900">{m.title}</p>
+                <p className="mt-1 text-[11px] font-semibold text-slate-500">
+                  {sourceLabel(m)}{m.volume ? ` · Vol ${m.volume.toLocaleString()}` : ""}
+                </p>
+              </Link>
+            </li>
+          ))}
+          {riskyBets.length === 0 && (
+            <li className="text-sm text-slate-500">No high-payout bets right now.</li>
+          )}
+        </ul>
+        <p className="mt-3 text-[11px] leading-4 text-slate-400">
+          Underdog Yes at 30¢ or less, biggest payout first, across Kalshi,
+          Polymarket and SX Bet. See the full list under the Highest Payout
+          tab in the feed.
+        </p>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-4">
         <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Account summary</p>
         <p className="mt-2 text-3xl font-extrabold text-slate-900">{money(account.availableBalance)}</p>

@@ -20,7 +20,17 @@ Express API — no new backend, no order placement.
   view (`/bet/:ticker`) with **Analytics** and **Info** tabs — Analytics and
   Info live only inside that bet detail view, not in the top nav.
 - **Left sidebar:** nav, Kalshi link status, watchlists.
-- **Right panel:** account summary, P&L, top movers, provider health, social notes.
+- **Right sidebar (risky bets):** the FIRST section in the right panel is
+  **Risky bets — high payout**: underdog bets (Yes at 30¢ or less) from
+  Kalshi, Polymarket and SX Bet, biggest payout first (top 6), with the
+  **odds first** on each card — big Yes price and payout per $1 at the top,
+  then the event title, then the source badge. Clicking a card opens that
+  bet's detail page. It is labelled high payout / high risk — long shots,
+  not safe bets. SX Bet markets have no price, so they never appear here.
+  The right panel is visible from the `lg` breakpoint (1024px) up, so it
+  shows on a normal desktop window. Below that, the feed's Highest Payout
+  tab shows the same list. Account summary, top movers, provider health,
+  traders to follow and social notes sit below it in the same panel.
 
 ## Social — first pass (Daryl said yes to all three: share, social sign-in, follow)
 
