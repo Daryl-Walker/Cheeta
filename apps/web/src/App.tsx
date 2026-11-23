@@ -9,6 +9,7 @@ import { API_URL, fetchDashboard, getToken, linkKalshi, setToken, unlinkKalshi }
 import { DEMO_SNAPSHOT } from "./lib/demo";
 import { fetchExternalMarkets, type ExternalFeedStatus, type ExternalSource } from "./lib/external-markets";
 import type { SourceFilter } from "./lib/app-state";
+import type { FeedFilter } from "./lib/risk";
 import DashboardPage from "./pages/Dashboard";
 import MarketsPage from "./pages/Markets";
 import PositionsPage from "./pages/Positions";
@@ -110,6 +111,7 @@ export default function App() {
     sxbet: "loading",
   });
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
+  const [feedFilter, setFeedFilter] = useState<FeedFilter>("all");
 
   // Merge the extra feeds into the snapshot the pages render. Kalshi/demo
   // markets keep their order first; Polymarket/SX Bet follow.
@@ -218,6 +220,8 @@ export default function App() {
     onUnlink: handleUnlink,
     sourceFilter,
     onSourceFilter: setSourceFilter,
+    feedFilter,
+    onFeedFilter: setFeedFilter,
     externalStatus,
   };
 

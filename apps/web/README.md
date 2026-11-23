@@ -94,6 +94,32 @@ Feed tabs filter by source (All / Kalshi / Polymarket / SX Bet), every card
 is badged with its source, and a failed feed shows a clear "live data
 unavailable" notice instead of crashing — the Kalshi/demo feed stays up.
 
+## Feed filters — risk, payout, trending
+
+The feed has two rows of tabs that combine:
+
+- **Source tabs:** All / Kalshi / Polymarket / SX Bet (as before).
+- **Feed tabs — exactly these:** All / **Low Risk** / **Highest Payout** / **Trending**.
+  Each tab swaps the whole feed (`apps/web/src/lib/risk.ts`, `filterMarkets`
+  in `apps/web/src/lib/app-state.ts`):
+  - **Low Risk:** only low-risk bets — the favourite outcome's implied
+    probability is 80% or higher (Yes >= 80¢ or No >= 80¢).
+  - **Highest Payout:** only the highest-payout bets — underdog Yes at
+    30¢ or less — sorted by payout descending, so $1 pays the most first.
+  - **Trending:** highest volume first, across all sources — where the
+    most money is moving right now.
+- **Payout on every card:** Yes 22¢ pays ~$4.55 per $1 if Yes wins
+  ($1 / price), No 78¢ pays ~$1.28. Each card also carries a risk badge
+  (Low risk / Medium risk / High payout / high risk / No price).
+- **No-price markets** (SX Bet's keyless listing) are excluded from Low
+  Risk and Highest Payout — there is no price to judge them by — and
+  appear under Trending only when they have volume; otherwise All only.
+  The feed says so wherever it applies.
+- **No "safe" claims anywhere:** high probability is not a guarantee,
+  high payout means high risk, and the app never predicts a safe bet.
+  It shows prices, volume and payouts — the user decides what to do
+  with them.
+
 ## Best odds — cross-source comparison
 
 Each bet detail view (Analytics tab) has a **Best odds** section

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import type { MarketSummary, PositionSummary } from "@cheeta/contracts";
 import { cents, money } from "../lib/api";
 import { sourceLabel, sourceOf } from "../lib/compare";
+import { formatPayout, riskBand, RISK_LABELS } from "../lib/risk";
 import { authorForTicker } from "../lib/social";
 import FollowButton from "./FollowButton";
 import ShareMenu from "./ShareMenu";
@@ -20,6 +21,15 @@ export function BetCard({
   const [stake, setStake] = useState(initialStake);
   const price = side === "yes" ? market.yesBid : market.yesAsk !== null && market.yesBid !== null ? 1 - market.yesBid : null;
   const author = authorForTicker(market.ticker);
+  const band = riskBand(market);
+  const badgeClass =
+    band === "low"
+      ? "bg-teal-50 text-teal-800"
+      : band === "high"
+        ? "bg-violet-50 text-violet-800"
+        : band === "medium"
+          ? "bg-amber-50 text-amber-800"
+          : "bg-slate-100 text-slate-500";
 
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -42,6 +52,9 @@ export function BetCard({
           </p>
           <span className="mt-1 inline-block rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-bold text-[#2563eb]">
             {sourceLabel(market)}
+          </span>{" "}
+          <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-bold ${badgeClass}`}>
+            {RISK_LABELS[band]}
           </span>
           <h3 className="mt-1 text-base font-bold text-slate-900">
             <Link to={`/bet/${encodeURIComponent(market.ticker)}`} className="hover:text-[#2563eb] hover:underline">
@@ -77,6 +90,18 @@ export function BetCard({
         Volume {market.volume?.toLocaleString() ?? "—"} · Open interest {market.openInterest?.toLocaleString() ?? "—"}
         {market.closeTime ? ` · Closes ${new Date(market.closeTime).toLocaleDateString()}` : ""}
       </p>
+      {market.yesBid !== null ? (
+        <p className="mt-1 text-xs text-slate-500">
+          Payout per $1: Yes {cents(market.yesBid)} pays {formatPayout(market.yesBid)} if Yes wins · No{" "}
+          {Math.round((1 - market.yesBid) * 100)}¢ pays {formatPayout(1 - market.yesBid)} if No wins.
+          {band === "low" ? " Low risk means the favourite is at 80% or higher — that is not a guarantee." : ""}
+          {band === "high" ? " High payout means high risk — this is a long shot." : ""}
+        </p>
+      ) : (
+        <p className="mt-1 text-xs text-slate-500">
+          No payout shown — this market has no live price.
+        </p>
+      )}
       {sourceOf(market) === "sxbet" && market.yesBid === null && (
         <p className="mt-2 rounded-lg bg-slate-50 p-2 text-[11px] leading-4 text-slate-500">
           No live price: SX Bet&apos;s public listing carries no prices, and its

@@ -103,6 +103,17 @@ export const DEMO_SNAPSHOT: DashboardSnapshot = {
       openInterest: 9800,
       closeTime: "2026-12-31T23:59:00Z",
     },
+    {
+      ticker: "UNEMP-LOW26",
+      title: "Will US unemployment stay below 6% in January?",
+      subtitle: "Economy · Closes Jan 31",
+      status: "open",
+      yesBid: 0.87,
+      yesAsk: 0.89,
+      volume: 64200,
+      openInterest: 15400,
+      closeTime: "2026-01-31T23:59:00Z",
+    },
   ],
 };
 
